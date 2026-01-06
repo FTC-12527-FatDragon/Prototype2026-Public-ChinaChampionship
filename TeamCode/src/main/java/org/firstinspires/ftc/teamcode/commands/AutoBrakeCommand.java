@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands.autocommands;
+package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.pedropathing.follower.Follower;
