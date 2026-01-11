@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
-import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConstants.releaseVelocity;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,28 +11,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.utils.Util;
 
 public class Shooter extends SubsystemBase {
-    public final DcMotorEx leftShooter;
-    public final DcMotorEx rightShooter;
-    public final Servo brakeServo;
-    public final TelemetryPacket packet = new TelemetryPacket();
+    public Motor leftShooter;
+    public Motor rightShooter;
+    public TelemetryPacket packet = new TelemetryPacket();
 
     public ShooterState shooterState = ShooterState.STOP;
 
-    public final boolean highSpeed;
+    public boolean highSpeed;
 
     public double dynamicSpeed;
 
-    public Shooter(final HardwareMap hardwareMap, boolean highSpeed) {
-        leftShooter = hardwareMap.get(DcMotorEx.class, ShooterConstants.leftShooterName);
-        rightShooter = hardwareMap.get(DcMotorEx.class, ShooterConstants.rightShooterName);
-        brakeServo = hardwareMap.get(Servo.class, ShooterConstants.brakeServoName);
-        this.highSpeed = highSpeed;
-        this.dynamicSpeed = 0;
+    public Shooter(final HardwareMap hardwareMap) {
+        leftShooter = new Motor(hardwareMap, ShooterConstants.leftShooterName);
+        rightShooter = new Motor(hardwareMap, ShooterConstants.rightShooterName);
+
     }
 
     public enum ShooterState {
-        STOP(ShooterConstants.stopPower),
-        FASTSTOP(ShooterConstants.fastStopPower),
+        STOP(ShooterConstants.stopVelocity),
         SLOW(ShooterConstants.slowVelocity),
         FAST(ShooterConstants.fastVelocity),
         DYNAMIC(0),
@@ -61,14 +56,6 @@ public class Shooter extends SubsystemBase {
     public boolean isShooterAtSetPoint() {
         return Util.epsilonEqual(shooterState.shooterVelocity,
                 rightShooter.getVelocity(), ShooterConstants.shooterEpsilon);
-    }
-
-    public void brakeShooter() {
-        brakeServo.setPosition(ShooterConstants.brakePose);
-    }
-
-    public void releaseShooter() {
-        brakeServo.setPosition(ShooterConstants.releasePose);
     }
 
     @Override
